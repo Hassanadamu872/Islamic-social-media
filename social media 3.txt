@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Islamic Social Network</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Islamic Social Network</h1>
+
+<div id="auth">
+  <h2>Register / Login</h2>
+  <input id="username" placeholder="Name">
+  <input id="password" type="password" placeholder="Password">
+  <input id="badge" placeholder="Badge (Optional)">
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="profile" style="display:none;">
+  <h2>Profile</h2>
+  <img id="avatar" src="" width="50">
+  <input type="file" onchange="uploadAvatar(event)">
+  <input id="editName" placeholder="Name">
+  <input id="editBadge" placeholder="Badge">
+  <button onclick="saveProfile()">Save Profile</button>
+</div>
+
+<div id="stories" style="display:none;">
+  <h2>Stories</h2>
+  <input id="storySrc" placeholder="Image/Video URL">
+  <input id="storyContent" placeholder="Content / Hadith / Quran">
+  <select id="storyType">
+    <option value="image">Image</option>
+    <option value="video">Video</option>
+    <option value="hadith">Hadith</option>
+    <option value="quran">Quran</option>
+    <option value="quote">Quote</option>
+  </select>
+  <button onclick="postStory()">Post Story</button>
+  <div id="storyList"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

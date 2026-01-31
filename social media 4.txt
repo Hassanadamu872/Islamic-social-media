@@ -1,0 +1,85 @@
+let token = "";
+let avatarData = "";
+
+function register() {
+  fetch("http://localhost:3000/register", {
+    method:"POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: document.getElementById("username").value,
+      password: document.getElementById("password").value,
+      badge: document.getElementById("badge").value
+    })
+  }).then(r=>r.json()).then(d=>alert(d.msg));
+}
+
+function login() {
+  fetch("http://localhost:3000/login", {
+    method:"POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      name: document.getElementById("username").value,
+      password: document.getElementById("password").value
+    })
+  }).then(r=>r.json()).then(d=>{
+    token=d.token;
+    document.getElementById("auth").style.display="none";
+    document.getElementById("profile").style.display="block";
+    document.getElementById("stories").style.display="block";
+    loadProfile();
+    loadStories();
+  });
+}
+
+function uploadAvatar(event) {
+  const file=event.target.files[0];
+  const reader=new FileReader();
+  reader.onload=()=>{avatarData=reader.result;document.getElementById("avatar").src=avatarData;}
+  reader.readAsDataURL(file);
+}
+
+function saveProfile() {
+  fetch("http://localhost:3000/profile",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":token},
+    body: JSON.stringify({
+      name: document.getElementById("editName").value,
+      avatar: avatarData,
+      badge: document.getElementById("editBadge").value
+    })
+  }).then(r=>r.json()).then(d=>alert("Profile Updated"));
+}
+
+function loadProfile() {
+  fetch("http://localhost:3000/profile",{headers:{"Authorization":token}})
+  .then(r=>r.json()).then(u=>{
+    document.getElementById("editName").value=u.name;
+    document.getElementById("editBadge").value=u.badge;
+    if(u.avatar) document.getElementById("avatar").src=u.avatar;
+  });
+}
+
+function postStory() {
+  fetch("http://localhost:3000/story",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":token},
+    body: JSON.stringify({
+      src: document.getElementById("storySrc").value,
+      type: document.getElementById("storyType").value,
+      content: document.getElementById("storyContent").value
+    })
+  }).then(r=>r.json()).then(loadStories);
+}
+
+function loadStories() {
+  fetch("http://localhost:3000/stories",{headers:{"Authorization":token}})
+  .then(r=>r.json()).then(stories=>{
+    const div=document.getElementById("storyList");
+    div.innerHTML="";
+    stories.forEach(s=>{
+      const d=document.createElement("div");
+      d.innerHTML=`<b>User ${s.userId} [${s.type}]</b>: ${s.content}<br>${s.src}`;
+      div.appendChild(d);
+    });
+  });
+}
